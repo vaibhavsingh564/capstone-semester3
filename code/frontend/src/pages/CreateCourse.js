@@ -10,7 +10,8 @@ const CreateCourse = () => {
     title: '',
     description: '',
     category: '',
-    price: 0
+    price: 0,
+    isPublished: false
   });
   const [error, setError] = useState('');
 
@@ -31,7 +32,8 @@ const CreateCourse = () => {
   }, [user, loading, navigate]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -138,9 +140,20 @@ const CreateCourse = () => {
                   value={formData.price}
                   onChange={handleChange}
                   min="0"
-                  step="0.01"
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    name="isPublished"
+                    checked={formData.isPublished}
+                    onChange={handleChange}
+                    style={{ width: 'auto', margin: 0 }}
+                  />
+                  <span>Publish immediately (Make visible to students)</span>
+                </label>
               </div>
               <button type="submit" className="btn btn-primary">
                 Create Course

@@ -13,9 +13,20 @@ const Courses = () => {
     maxPrice: '',
     isPublished: 'true'
   });
+  // Local state for debounced search
+  const [searchTerm, setSearchTerm] = useState('');
   const [sort, setSort] = useState({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(9);
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFilters(prev => ({ ...prev, search: searchTerm }));
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchCourses();
@@ -110,8 +121,8 @@ const Courses = () => {
               <input
                 type="text"
                 placeholder="Search courses..."
-                value={filters.search}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
@@ -146,6 +157,7 @@ const Courses = () => {
             <button
               onClick={() => {
                 setFilters({ search: '', category: '', minPrice: '', maxPrice: '', isPublished: 'true' });
+                setSearchTerm('');
                 setCurrentPage(1);
               }}
               className="btn btn-secondary btn-sm"
