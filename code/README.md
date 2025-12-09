@@ -1,214 +1,243 @@
-# Teacher - Teaching Platform
+# Teacher - Learning Management System
 
-A full-stack Teaching Platform built with the MERN stack (MongoDB, Express, React, Node.js).
+A modern, full-stack Learning Management System (LMS) built with React and Node.js, featuring a premium UI with glassmorphism effects and smooth animations.
 
-## Features
+![Platform](https://img.shields.io/badge/Platform-Web-blue)
+![Frontend](https://img.shields.io/badge/Frontend-React-61dafb)
+![Backend](https://img.shields.io/badge/Backend-Node.js-339933)
+![Database](https://img.shields.io/badge/Database-MongoDB-47A248)
 
-### For Students:
-- User registration and authentication
-- Browse all published courses
-- Enroll in courses
-- View course lessons
-- Track learning progress
-- Mark lessons as complete
-- View enrolled courses dashboard
+## ✨ Features
 
-### For Instructors:
+### 🎓 For Students
+- Browse and search courses with advanced filtering
+- Enroll in courses and track progress
+- Complete quizzes, assignments, and tests
+- View performance analytics
+- Earn certificates upon completion
+
+### 👨‍🏫 For Instructors
 - Create and manage courses
-- Add lessons to courses
-- Edit course details
+- Add lessons, quizzes, assignments, and tests
+- Track student enrollment and progress
 - Publish/unpublish courses
-- View enrolled students
-- Delete courses and lessons
+- Manage course pricing
 
-### General:
-- Role-based access control (Student, Instructor, Admin)
-- JWT-based authentication
-- Responsive design
-- Progress tracking
-- Course management
+### 🎨 Modern UI/UX
+- **Premium Design**: Purple/blue gradient color scheme
+- **Glassmorphism Effects**: Modern frosted glass aesthetics
+- **Smooth Animations**: fadeIn, slideIn, scaleIn, and float effects
+- **Responsive Design**: Mobile, tablet, and desktop optimized
+- **Google Fonts**: Inter font family for premium typography
 
-## Tech Stack
+## 🚀 Tech Stack
 
-### Backend:
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT for authentication
-- bcryptjs for password hashing
-- express-validator for input validation
+### Frontend
+- **React** - UI library
+- **React Router** - Client-side routing
+- **Axios** - HTTP client
+- **Context API** - State management
+- **CSS3** - Styling with modern effects
 
-### Frontend:
-- React 18
-- React Router DOM
-- Axios for API calls
-- Context API for state management
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **MongoDB** - Database
+- **Mongoose** - ODM
+- **JWT** - Authentication
+- **bcryptjs** - Password hashing
 
-## Installation & Setup
+## 📦 Installation
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (local installation or MongoDB Atlas)
+- MongoDB (local or Atlas)
 - npm or yarn
 
-### Backend Setup
+### Clone Repository
+```bash
+git clone https://github.com/vaibhavsingh564/capstone-semester3.git
+cd capstone-semester3
+```
 
-1. Navigate to the backend directory:
+### Backend Setup
 ```bash
 cd backend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
 
-3. Create a `.env` file in the backend directory:
-```env
-PORT=5000
+# Create .env file
+cat > .env << EOF
+PORT=5001
 MONGODB_URI=mongodb://localhost:27017/teacher
-JWT_SECRET=your_jwt_secret_key_here_change_in_production
-JWT_EXPIRE=7d
-```
+JWT_SECRET=your_jwt_secret_key_here
+EOF
 
-4. Start the backend server:
-```bash
-# Development mode (with nodemon)
+# Start backend server
 npm run dev
-
-# Production mode
-npm start
 ```
-
-The backend server will run on `http://localhost:5000`
 
 ### Frontend Setup
-
-1. Navigate to the frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
 
-3. Start the development server:
-```bash
+# Start frontend development server
 npm start
 ```
 
-The frontend will run on `http://localhost:3000`
+The application will be available at:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5001
 
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (Protected)
-
-### Courses
-- `GET /api/courses` - Get all published courses
-- `GET /api/courses/:id` - Get single course with lessons
-- `GET /api/courses/my-courses` - Get instructor's courses (Protected - Instructor)
-- `GET /api/courses/enrolled` - Get student's enrolled courses (Protected)
-- `POST /api/courses` - Create a new course (Protected - Instructor)
-- `PUT /api/courses/:id` - Update a course (Protected - Instructor/Owner)
-- `DELETE /api/courses/:id` - Delete a course (Protected - Instructor/Owner)
-
-### Lessons
-- `GET /api/lessons/course/:courseId` - Get all lessons for a course
-- `GET /api/lessons/:id` - Get single lesson
-- `POST /api/lessons` - Create a new lesson (Protected - Instructor)
-- `PUT /api/lessons/:id` - Update a lesson (Protected - Instructor)
-- `DELETE /api/lessons/:id` - Delete a lesson (Protected - Instructor)
-
-### Enrollments
-- `POST /api/enrollments` - Enroll in a course (Protected)
-- `GET /api/enrollments/:courseId` - Get enrollment for a course (Protected)
-- `PUT /api/enrollments/:id/progress` - Update enrollment progress (Protected)
-
-## User Roles
-
-1. **Student**: Can browse courses, enroll, and track progress
-2. **Instructor**: Can create and manage courses and lessons
-3. **Admin**: Full access to all features
-
-## Default Setup
-
-When you first run the application:
-1. Register a new user with role "instructor" to create courses
-2. Register a new user with role "student" to enroll in courses
-3. Or use the same account and switch roles as needed
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-code/
+capstone-semester3/
 ├── backend/
+│   ├── middleware/
+│   │   └── auth.js
 │   ├── models/
 │   │   ├── User.js
 │   │   ├── Course.js
 │   │   ├── Lesson.js
-│   │   └── Enrollment.js
+│   │   ├── Quiz.js
+│   │   ├── Assignment.js
+│   │   ├── Test.js
+│   │   ├── Enrollment.js
+│   │   └── ...
 │   ├── routes/
 │   │   ├── auth.js
 │   │   ├── courses.js
 │   │   ├── lessons.js
-│   │   └── enrollments.js
-│   ├── middleware/
-│   │   └── auth.js
+│   │   ├── quizzes.js
+│   │   ├── assignments.js
+│   │   └── ...
+│   ├── utils/
+│   │   └── queryBuilder.js
 │   ├── server.js
 │   └── package.json
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/
-│   │   ├── App.js
-│   │   └── index.js
-│   └── package.json
-└── README.md
+│
+└── frontend/
+    ├── public/
+    │   └── index.html
+    ├── src/
+    │   ├── components/
+    │   │   ├── Navbar.js
+    │   │   ├── Footer.js
+    │   │   └── PrivateRoute.js
+    │   ├── context/
+    │   │   └── AuthContext.js
+    │   ├── pages/
+    │   │   ├── Home.js
+    │   │   ├── Login.js
+    │   │   ├── Register.js
+    │   │   ├── Dashboard.js
+    │   │   ├── Courses.js
+    │   │   ├── CourseDetail.js
+    │   │   ├── MyCourses.js
+    │   │   └── ...
+    │   ├── App.js
+    │   ├── index.css
+    │   └── index.js
+    └── package.json
 ```
 
-## Development
+## 🔐 Authentication
 
-### Running in Development Mode
+The system supports three user roles:
+- **Student**: Can enroll in courses and track progress
+- **Instructor**: Can create and manage courses
+- **Admin**: Full system access
 
-1. Start MongoDB (if running locally):
-```bash
-mongod
+### Register
+```
+POST /api/auth/register
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "role": "student" // or "instructor"
+}
 ```
 
-2. Start backend server (in backend directory):
-```bash
-npm run dev
+### Login
+```
+POST /api/auth/login
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
 ```
 
-3. Start frontend server (in frontend directory):
-```bash
-npm start
-```
+## 📚 API Endpoints
 
-## Production Deployment
+### Courses
+- `GET /api/courses` - Get all courses (with filtering, pagination, sorting)
+- `GET /api/courses/:id` - Get single course
+- `POST /api/courses` - Create course (Instructor only)
+- `PUT /api/courses/:id` - Update course (Instructor only)
+- `DELETE /api/courses/:id` - Delete course (Instructor only)
+- `GET /api/courses/my-courses` - Get instructor's courses
+- `GET /api/courses/enrolled` - Get student's enrolled courses
 
-1. Build the frontend:
-```bash
-cd frontend
-npm run build
-```
+### Enrollments
+- `POST /api/enrollments` - Enroll in course
+- `GET /api/enrollments/course/:courseId` - Check enrollment status
+- `PUT /api/enrollments/:id/progress` - Update progress
 
-2. Set environment variables in production
-3. Use a process manager like PM2 for Node.js
-4. Configure MongoDB Atlas or production MongoDB instance
+### Lessons, Quizzes, Assignments, Tests
+- Full CRUD operations for course content
+- Progress tracking and submissions
 
-## License
+## 🎨 Design System
 
-MIT License
+### Color Palette
+- **Primary**: `#6366f1` (Indigo)
+- **Secondary**: `#8b5cf6` (Purple)
+- **Accent**: `#06b6d4` (Cyan)
+- **Success**: `#10b981` (Green)
+- **Danger**: `#ef4444` (Red)
 
-## Contributing
+### Typography
+- **Font Family**: Inter (Google Fonts)
+- **Weights**: 300, 400, 500, 600, 700, 800, 900
 
-Feel free to submit issues and enhancement requests!
+### Effects
+- Glassmorphism with backdrop blur
+- Gradient backgrounds
+- Smooth transitions and animations
+- Hover effects with scale and shadow
 
+## 📸 Screenshots
+
+### Home Page
+Modern hero section with animated gradient background, statistics counter, features grid, testimonials, and call-to-action.
+
+### Courses Page
+Enhanced course cards with gradient thumbnails, advanced filtering, and pagination.
+
+### Dashboard
+Personalized dashboard with dynamic greeting, stats cards, and role-based actions.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 👨‍💻 Author
+
+**Vaibhav Singh**
+- GitHub: [@vaibhavsingh564](https://github.com/vaibhavsingh564)
+
+## 🙏 Acknowledgments
+
+- Design inspiration from modern web applications
+- Icons: Emoji icons for visual appeal
+- Fonts: Google Fonts (Inter)
+
+---
+
+Made with ❤️ for learners
