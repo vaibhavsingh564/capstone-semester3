@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+// import api from '../api/axios'; // AuthContext handles actual API calls, but fixing import just in case direct usage exists or unused import removal
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import './Auth.css';
@@ -26,9 +27,9 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setMessage('');
-    
+
     const result = await login(formData.email, formData.password);
-    
+
     if (result.success) {
       // If user is instructor/admin, redirect to create course if they came from there
       if (result.user && (result.user.role === 'instructor' || result.user.role === 'admin')) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -24,15 +24,15 @@ const Courses = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: currentPage,
-        limit: limit,
-        sortBy: sort.sortBy,
-        sortOrder: sort.sortOrder,
-        ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ''))
+      const res = await api.get('/api/courses', {
+        params: {
+          page: currentPage,
+          limit: limit,
+          sortBy: sort.sortBy,
+          sortOrder: sort.sortOrder,
+          ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ''))
+        }
       });
-
-      const res = await axios.get(`/api/courses?${params}`);
 
       if (res.data.success) {
         setCourses(res.data.data);

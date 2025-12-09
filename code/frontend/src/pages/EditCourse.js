@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import CreateLesson from '../components/CreateLesson';
 
 const EditCourse = () => {
@@ -24,14 +24,12 @@ const EditCourse = () => {
 
   const fetchCourse = async () => {
     try {
-      const res = await axios.get(`/api/courses/${id}`);
-      setCourse(res.data.course);
+      const res = await api.get(`/api/courses/${id}`);
+      const courseData = res.data.data || res.data; // Handle both formats
+      const course = courseData.course || courseData; // If data is wrapped in 'course' property (old format) or direct
+      setCourse(course);
       setLessons(res.data.lessons);
       setFormData({
-        title: res.data.course.title,
-        description: res.data.course.description,
-        category: res.data.course.category,
-        price: res.data.course.price,
         isPublished: res.data.course.isPublished
       });
     } catch (error) {
@@ -51,7 +49,7 @@ const EditCourse = () => {
     setError('');
 
     try {
-      await axios.put(`/api/courses/${id}`, formData);
+      await api.put(`/api/courses/${id}`, formData);
       fetchCourse();
       setError('');
     } catch (error) {
@@ -62,7 +60,9 @@ const EditCourse = () => {
   const handleDeleteLesson = async (lessonId) => {
     if (window.confirm('Are you sure you want to delete this lesson?')) {
       try {
-        await axios.delete(`/api/lessons/${lessonId}`);
+        await api.delete(`/api/lessons/${lessonId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
         fetchCourse();
       } catch (error) {
         setError('Failed to delete lesson');
@@ -100,7 +100,7 @@ const EditCourse = () => {
       <div className="container">
         <h1>Edit Course</h1>
         {error && <div className="alert alert-error">{error}</div>}
-        
+
         <div className="card">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -164,7 +164,7 @@ const EditCourse = () => {
         <div className="card">
           <h2>Lessons</h2>
           <CreateLesson courseId={id} onLessonCreated={handleLessonCreated} />
-          
+
           {lessons.length === 0 ? (
             <p>No lessons yet. Add your first lesson above.</p>
           ) : (

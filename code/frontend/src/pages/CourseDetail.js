@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 
 const CourseDetail = () => {
@@ -27,15 +27,16 @@ const CourseDetail = () => {
 
   const fetchCourse = async () => {
     try {
-      const res = await axios.get(`/api/courses/${id}`);
-      setCourse(res.data.course);
-      setLessons(res.data.lessons);
-      
+      const res = await api.get(`/api/courses/${id}`);
+      const courseData = res.data.data || res.data;
+      setCourse(courseData.course || courseData);
+      setLessons(courseData.lessons || []);
+
       if (user) {
         const [quizzesRes, assignmentsRes, testsRes] = await Promise.all([
-          axios.get(`/api/quizzes/course/${id}`),
-          axios.get(`/api/assignments/course/${id}`),
-          axios.get(`/api/tests/course/${id}`)
+          api.get(`/api/quizzes/course/${id}`),
+          api.get(`/api/assignments/course/${id}`),
+          api.get(`/api/tests/course/${id}`)
         ]);
         setQuizzes(quizzesRes.data);
         setAssignments(assignmentsRes.data);
@@ -50,7 +51,9 @@ const CourseDetail = () => {
 
   const checkEnrollment = async () => {
     try {
-      const res = await axios.get(`/api/enrollments/${id}`);
+      const res = await api.get(`/api/enrollments/course/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
       setEnrollment(res.data);
     } catch (error) {
       setEnrollment(null);
@@ -59,7 +62,7 @@ const CourseDetail = () => {
 
   const checkPurchase = async () => {
     try {
-      const res = await axios.get(`/api/purchases/course/${id}`);
+      const res = await api.get(`/api/purchases/course/${id}`, { headers: { Authorization: `Bearer ${user.token}` } });
       setPurchase(res.data.purchase);
     } catch (error) {
       setPurchase(null);
@@ -73,12 +76,14 @@ const CourseDetail = () => {
     }
 
     try {
-      const res = await axios.post('/api/purchases', { courseId: id });
+      const res = await api.post('/api/purchases', { courseId: id }, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
       if (res.data.paymentStatus === 'completed' || course.price === 0) {
         await handleEnroll();
       } else {
         // For paid courses, complete the purchase
-        await axios.put(`/api/purchases/${res.data._id}/complete`);
+        await api.put(`/api/purchases/${res.data._id}/complete`, {}, { headers: { Authorization: `Bearer ${user.token}` } });
         await handleEnroll();
       }
       setMessage('Course purchased and enrolled successfully!');
@@ -91,7 +96,9 @@ const CourseDetail = () => {
 
   const handleEnroll = async () => {
     try {
-      await axios.post('/api/enrollments', { courseId: id });
+      await api.post('/api/enrollments', { courseId: id }, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
       checkEnrollment();
       setMessage('Successfully enrolled!');
     } catch (error) {
@@ -105,8 +112,10 @@ const CourseDetail = () => {
 
   const handleCompleteLesson = async (lessonId) => {
     try {
-      await axios.put(`/api/enrollments/${enrollment._id}/progress`, {
+      await api.put(`/api/enrollments/${enrollment._id}/progress`, {
         lessonId
+      }, {
+        headers: { Authorization: `Bearer ${user.token}` }
       });
       checkEnrollment();
       setMessage('Lesson marked as complete!');
@@ -152,7 +161,7 @@ const CourseDetail = () => {
             {message}
           </div>
         )}
-        
+
         <div className="card">
           <div className="card-header">
             <h1 className="card-title">{course.title}</h1>
@@ -167,7 +176,7 @@ const CourseDetail = () => {
             <div><strong>Price:</strong> ${course.price === 0 ? 'Free' : course.price}</div>
             <div><strong>Students:</strong> {course.enrolledStudents?.length || 0}</div>
           </div>
-          
+
           {isInstructor ? (
             <Link to={`/edit-course/${course._id}`} className="btn btn-primary">
               Edit Course
@@ -195,7 +204,7 @@ const CourseDetail = () => {
                     const isCompleted = enrollment?.completedLessons?.some(
                       (l) => l._id === lesson._id
                     );
-                    
+
                     return (
                       <div
                         key={lesson._id}
@@ -231,7 +240,7 @@ const CourseDetail = () => {
                   })}
                 </div>
               )}
-              
+
               {enrollment && (
                 <div style={{ marginTop: '24px', padding: '20px', backgroundColor: '#d1fae5', borderRadius: '8px', border: '2px solid #10b981' }}>
                   <h3 style={{ color: '#047857' }}>Your Progress</h3>

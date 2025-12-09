@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 
 const QuizPage = () => {
@@ -26,15 +26,19 @@ const QuizPage = () => {
 
   const fetchQuiz = async () => {
     try {
-      const res = await axios.get(`/api/quizzes/${id}`);
+      const res = await api.get(`/api/quizzes/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
       setQuiz(res.data);
       setAnswers(new Array(res.data.questions.length).fill(null).map((_, i) => ({
         selectedAnswer: null
       })));
-      
+
       // Check for existing submission
       try {
-        const subRes = await axios.get(`/api/quizzes/${id}/submission`);
+        const subRes = await api.get(`/api/quizzes/${id}/submission`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
         setSubmission(subRes.data);
       } catch (error) {
         // No submission yet
@@ -59,9 +63,16 @@ const QuizPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await axios.post(`/api/quizzes/${id}/submit`, {
-        answers,
+      // Format answers for submission
+      const formattedAnswers = answers.map(answer => ({
+        selectedAnswer: answer.selectedAnswer
+      }));
+
+      const res = await api.post(`/api/quizzes/${id}/submit`, {
+        answers: formattedAnswers,
         timeSpent
+      }, {
+        headers: { Authorization: `Bearer ${user.token}` }
       });
       setSubmission(res.data);
       setMessage(`Quiz submitted! Score: ${res.data.score}/${quiz.totalPoints} (${res.data.percentage}%)`);
@@ -125,8 +136,8 @@ const QuizPage = () => {
                             padding: '8px',
                             margin: '4px 0',
                             backgroundColor: optIndex === question.correctAnswer ? '#d1fae5' :
-                                            optIndex === answer?.selectedAnswer && !answer.isCorrect ? '#fee2e2' :
-                                            optIndex === answer?.selectedAnswer ? '#dbeafe' : 'transparent',
+                              optIndex === answer?.selectedAnswer && !answer.isCorrect ? '#fee2e2' :
+                                optIndex === answer?.selectedAnswer ? '#dbeafe' : 'transparent',
                             borderRadius: '4px'
                           }}
                         >
@@ -164,7 +175,7 @@ const QuizPage = () => {
             </div>
           </div>
           <p style={{ marginBottom: '24px' }}>{quiz.description}</p>
-          
+
           <div style={{ marginBottom: '24px' }}>
             {quiz.questions.map((question, index) => (
               <div key={index} style={{ marginBottom: '24px', padding: '20px', border: '2px solid var(--border-color)', borderRadius: '8px' }}>

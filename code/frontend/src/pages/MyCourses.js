@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -13,7 +13,7 @@ const MyCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('/api/courses/my-courses');
+      const res = await api.get('/api/courses/my-courses');
       // Handle buildResponse format: { success, data, pagination }
       if (res.data && res.data.data) {
         setCourses(res.data.data);
@@ -33,7 +33,7 @@ const MyCourses = () => {
   const handleDelete = async (courseId) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete(`/api/courses/${courseId}`);
+        await api.delete(`/api/courses/${courseId}`);
         fetchCourses();
       } catch (error) {
         alert('Failed to delete course');

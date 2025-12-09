@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import './Auth.css';
@@ -21,14 +22,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     const result = await register(
       formData.name,
       formData.email,
       formData.password,
       formData.role
     );
-    
+
     if (result.success) {
       navigate('/dashboard');
     } else {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 
 const EnrolledCourses = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -13,7 +13,7 @@ const EnrolledCourses = () => {
 
   const fetchEnrollments = async () => {
     try {
-      const res = await axios.get('/api/courses/enrolled');
+      const res = await api.get('/api/courses/enrolled');
       // Handle buildResponse format: { success, data, pagination }
       if (res.data && res.data.data) {
         setEnrollments(res.data.data);

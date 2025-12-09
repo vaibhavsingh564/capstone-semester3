@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const CreateLesson = ({ courseId, onLessonCreated }) => {
   const [formData, setFormData] = useState({
@@ -22,10 +22,12 @@ const CreateLesson = ({ courseId, onLessonCreated }) => {
     setError('');
 
     try {
-      await axios.post('/api/lessons', {
-        ...formData,
-        course: courseId
-      });
+      const res = await api.post(`/api/lessons`,
+        { ...formData, course: courseId },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
       setFormData({
         title: '',
         description: '',

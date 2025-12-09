@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 
 const CreateCourse = () => {
@@ -51,7 +51,12 @@ const CreateCourse = () => {
     }
 
     try {
-      const res = await axios.post('/api/courses', formData);
+      const res = await api.post('/api/courses', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const courseData = res.data.success ? res.data.data : res.data;
       if (courseData?._id) {
         navigate(`/courses/${courseData._id}`);
